@@ -1,11 +1,14 @@
 package com.lycha.example.augmentedreality;
 
+import android.*;
+import android.Manifest;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -43,19 +46,20 @@ public class CameraViewActivity extends Activity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera_view);
+		ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,Manifest.permission.INTERNET,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}, 0);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 		setupListeners();
 		setupLayout();
 		setAugmentedRealityPoint();
+
 	}
+
 
 	private void setAugmentedRealityPoint() {
 		mPoi = new AugmentedPOI(
-				"Kościół Marciacki",
-				"Kościół Marciacki w Krakowie",
-				50.06169631,
-				19.93919566
+				"Test Title",
+				"Test Description",
+				3.235861, 101.647559
 		);
 	}
 
@@ -149,16 +153,20 @@ public class CameraViewActivity extends Activity implements
 
 	@Override
 	protected void onStop() {
-		myCurrentAzimuth.stop();
-		myCurrentLocation.stop();
+		if(myCurrentAzimuth!=null)
+			myCurrentAzimuth.stop();
+		if(myCurrentLocation!=null)
+			myCurrentLocation.stop();
 		super.onStop();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		myCurrentAzimuth.start();
-		myCurrentLocation.start();
+		if(myCurrentAzimuth!=null)
+			myCurrentAzimuth.start();
+		if(myCurrentLocation!=null)
+			myCurrentLocation.start();
 	}
 
 	private void setupListeners() {
